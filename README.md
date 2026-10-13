@@ -1,58 +1,142 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Comisiones MVC
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicación web desarrollada con Laravel para registrar vendedores, registrar ventas y calcular comisiones según el total vendido en un rango de fechas.
 
-## About Laravel
+## Aplicación publicada
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Aplicación: https://comisiones-laravel.onrender.com
+- Repositorio: https://github.com/StevenCuenca/comisiones-laravel
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Funcionalidades
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Registro y visualización de vendedores.
+- Registro y visualización de ventas.
+- Relación entre vendedores y ventas.
+- Cálculo de comisión por vendedor.
+- Filtro de ventas por fecha de inicio y fecha final.
+- Aplicación automática de reglas de comisión.
+- Despliegue en la nube con Render.
+- Base de datos PostgreSQL en Render.
 
-## Learning Laravel
+## Reglas de comisión
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Total vendido | Porcentaje |
+|---:|---:|
+| Menor a $500 | 0% |
+| Desde $500 | 8% |
+| Desde $600 | 6% |
+| Desde $800 | 10% |
+| Desde $1.000 | 15% |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+El sistema toma el umbral más alto que alcanza el total de ventas del vendedor dentro del período seleccionado.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Tecnologías utilizadas
 
-## Agentic Development
+- PHP
+- Laravel 13
+- Blade
+- SQLite para desarrollo local
+- PostgreSQL para producción
+- Docker
+- Render
+- GitHub
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Arquitectura MVC
+
+### Modelos
+
+- `Vendedor`: representa a cada vendedor.
+- `Venta`: representa una venta realizada por un vendedor.
+- `ReglaComision`: representa los umbrales y porcentajes de comisión.
+
+### Controladores
+
+- `VendedorController`: registra y lista vendedores.
+- `VentaController`: registra y lista ventas.
+- `ComisionController`: calcula la comisión según las ventas y reglas.
+
+### Vistas
+
+Las vistas están desarrolladas con Blade y se encuentran en `resources/views`.
+
+- `vendedores`: listado y formulario de vendedores.
+- `ventas`: listado y formulario de ventas.
+- `comisiones`: formulario de cálculo y resultado.
+- `layouts/app.blade.php`: plantilla visual compartida.
+
+## Base de datos
+
+El proyecto utiliza tres tablas principales:
+
+- `vendedores`
+- `ventas`
+- `reglas_comision`
+
+La tabla `ventas` se relaciona con `vendedores` mediante el campo `vendedor_id`.
+
+## Ejecución local
+
+1. Clonar el repositorio:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/StevenCuenca/comisiones-laravel.git
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+2. Entrar al proyecto:
 
-## Contributing
+```bash
+cd comisiones-laravel
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. Instalar dependencias:
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. Crear el archivo de base de datos SQLite:
 
-## Security Vulnerabilities
+```bash
+New-Item -Path database\database.sqlite -ItemType File -Force
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. Configurar `.env`:
 
-## License
+```env
+DB_CONNECTION=sqlite
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6. Ejecutar migraciones y cargar reglas:
+
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+7. Iniciar el servidor:
+
+```bash
+php artisan serve
+```
+
+8. Abrir:
+
+```text
+http://127.0.0.1:8000
+```
+
+## Despliegue
+
+La aplicación se despliega en Render mediante Docker.
+
+Durante el despliegue:
+
+1. Se instala PHP y las extensiones necesarias.
+2. Se instala Laravel mediante Composer.
+3. Se ejecutan las migraciones.
+4. Se cargan las reglas de comisión.
+5. Se conecta la aplicación a PostgreSQL mediante variables de entorno.
+
+## Autor
+
+Steven Cuenca
